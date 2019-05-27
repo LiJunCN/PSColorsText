@@ -1,0 +1,40 @@
+// 可在字符串内使用的可用变量。
+// ${workspaceRoot}: 工作区根目录
+// ${file}: 当前打开的文件
+// ${relativeFile}: 当前打开的文件 (相对于工作区根目录)
+// ${fileBasename}: 当前打开的文件的基本名称
+// ${fileDirname}: 当前打开的文件的目录名称
+// ${fileExtname}: 当前打开文件的扩展名
+// ${cwd}: 生成进程的当前工作目录
+{
+  // 有关 tasks.json 格式的文档请参阅 https://go.microsoft.com/fwlink/?LinkId=733558
+  "version": "2.0.0",
+
+  // 运行 PowerShell
+  "windows": {
+    "command": "${env:windir}/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "args": [ "-NoProfile", "-ExecutionPolicy", "Bypass" ]
+  },
+  "linux": {
+    "command": "/usr/bin/powershell",
+    "args": [ "-NoProfile" ]
+  },
+  "osx": {
+    "command": "/usr/local/bin/powershell",
+    "args": [ "-NoProfile" ]
+  },
+
+  // 与测试任务运行关联
+  "tasks": [
+    {
+      "taskName": "Test",
+      "suppressTaskName": true,
+      "isTestCommand": true,
+      "args": [
+        "Write-Host 'Invoking Pester...'; $ProgressPreference = 'SilentlyContinue'; Invoke-Pester -Script test -PesterOption @{IncludeVSCodeMarker=$true};",
+        "Invoke-Command { Write-Host 'Completed Test task in task runner.' }"
+      ],
+      "problemMatcher": "$pester"
+    }
+  ]
+}
